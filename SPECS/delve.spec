@@ -1,5 +1,5 @@
 Name:                   delve
-Version:                1.9.1
+Version:                1.20.2
 Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
@@ -64,6 +64,10 @@ done
 
 
 %changelog
+* Fri May 26 2023 Alejandro Sáez <asm@redhat.com> - 1.20.2-1
+- Rebase to 1.20.2
+- Resolves: rhbz#2186495
+
 * Fri Sep 30 2022 Alejandro Sáez <asm@redhat.com> - 1.9.1-1
 - Rebase to 1.9.1
 - Related: rhbz#2131026
