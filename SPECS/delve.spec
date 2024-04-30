@@ -1,19 +1,25 @@
+%ifarch ppc64le
+%global exp "-tags=exp.linuxppc64le"
+%endif
+
 Name:                   delve
-Version:                1.20.2
-Release:                1%{?dist}
+Version:                1.21.2
+Release:                2%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
 URL:                    https://github.com/go-delve/delve
 Source0:                https://github.com/go-delve/delve/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-ExcludeArch:            ppc64le s390x aarch64 %{ix86} armv7hl
+ExcludeArch:            s390x %{ix86} armv7hl
 
 BuildRequires:          compiler(go-compiler)
 BuildRequires:          git
 BuildRequires:          lsof
 
 Provides:               dlv = %{version}
+
+Patch0001:		modify-ports.patch
 
 
 %description
@@ -26,6 +32,7 @@ much as possible.
 
 %prep
 %setup -q
+%autopatch -p1
 
 rm -rf go.mod
 mv vendor %{_builddir}/src
@@ -38,7 +45,7 @@ mv %{_builddir}/src %{_builddir}/%{name}-%{version}/_build/src
 %build
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
-%gobuild -o bin/dlv github.com/go-delve/delve/cmd/dlv
+%gobuild %{?exp} -o bin/dlv github.com/go-delve/delve/cmd/dlv
 
 
 %install
@@ -48,13 +55,12 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %check
-## Related: rhbz#1922455
-# export GO111MODULE=off
-# export GOPATH="%{_builddir}/%{name}-%{version}/_build"
-# cd "_build/src/github.com/go-delve/%{name}"
-# for d in $(go list ./... | grep -v cmd | grep -v scripts); do
-#     go test ${d}
-# done
+export GO111MODULE=off
+export GOPATH="%{_builddir}/%{name}-%{version}/_build"
+cd "_build/src/github.com/go-delve/%{name}"
+for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
+    go test %{?exp} ${d}
+done
 
 
 %files
@@ -65,6 +71,17 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %changelog
+* Thu Jan 25 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-2
+- Modify ports: Some CI systems complain about the usage of the 8888 port.
+- Improve the way PPC64LE support is enabled.
+- Resolves: RHEL-22429
+
+* Tue Jan 23 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-1
+- Rebase to 1.21.2
+- Add support for ppc64le and aarch64
+- Enable the test suite
+- Resolves: RHEL-22429
+
 * Fri May 26 2023 Alejandro Sáez <asm@redhat.com> - 1.20.2-1
 - Rebase to 1.20.2
 - Resolves: rhbz#2186496
