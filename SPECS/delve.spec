@@ -1,19 +1,25 @@
+%ifarch ppc64le
+%global exp "-tags=exp.linuxppc64le"
+%endif
+
 Name:                   delve
-Version:                1.20.2
-Release:                1%{?dist}
+Version:                1.21.2
+Release:                3%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
 URL:                    https://github.com/go-delve/delve
 Source0:                https://github.com/go-delve/delve/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-ExcludeArch:            ppc64le s390x aarch64 %{ix86} armv7hl
+ExcludeArch:            s390x %{ix86} armv7hl
 
 BuildRequires:          compiler(go-compiler)
 BuildRequires:          git
 BuildRequires:          lsof
 
 Provides:               dlv = %{version}
+
+Patch0001:		modify-tests.patch
 
 
 %description
@@ -26,6 +32,7 @@ much as possible.
 
 %prep
 %setup -q
+%autopatch -p1
 
 rm -rf go.mod
 mv vendor %{_builddir}/src
@@ -38,7 +45,7 @@ mv %{_builddir}/src %{_builddir}/%{name}-%{version}/_build/src
 %build
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
-%gobuild -o bin/dlv github.com/go-delve/delve/cmd/dlv
+%gobuild %{?exp} -o bin/dlv github.com/go-delve/delve/cmd/dlv
 
 
 %install
@@ -51,8 +58,8 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
-for d in $(go list ./... | grep -v cmd | grep -v scripts); do
-    go test ${d}
+for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
+    go test %{?exp} ${d}
 done
 
 
@@ -64,6 +71,23 @@ done
 
 
 %changelog
+* Wed Jan 31 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-3
+- Skip an additional test as it's breaking in the CI system.
+- Modify the name of the patch.
+- Resolves: RHEL-22820
+
+* Fri Jan 26 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-2
+- Fix: Remove architectures from exclude ExcludeArch
+- Resolves: RHEL-22820
+
+* Fri Jan 26 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-1
+- Rebase to 1.21.2
+- Add support for ppc64le and aarch64
+- Enable the test suite
+- Modify ports: Some CI systems complain about the usage of the 8888 port.
+- Improve the way PPC64LE support is enabled.
+- Resolves: RHEL-22820
+
 * Fri May 26 2023 Alejandro Sáez <asm@redhat.com> - 1.20.2-1
 - Rebase to 1.20.2
 - Resolves: rhbz#2186495
