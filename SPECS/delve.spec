@@ -3,8 +3,8 @@
 %endif
 
 Name:                   delve
-Version:                1.21.2
-Release:                4%{?dist}
+Version:                1.22.1
+Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
@@ -55,16 +55,12 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %check
-# Temporary - FIXME
-# Buildroot Go is not compatible with this version of delve tests.
-# We'll have to rely on downstream QE tests until delve 1.22
-# lands in the buildroot.
-#export GO111MODULE=off
-#export GOPATH="%{_builddir}/%{name}-%{version}/_build"
-#cd "_build/src/github.com/go-delve/%{name}"
-#for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
-#    go test %{?exp} ${d}
-#done
+export GO111MODULE=off
+export GOPATH="%{_builddir}/%{name}-%{version}/_build"
+cd "_build/src/github.com/go-delve/%{name}"
+for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
+    go test %{?exp} ${d}
+done
 
 
 %files
@@ -75,9 +71,9 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %changelog
-* Wed Sep 18 2024 David Benoit <dbenoit@redhat.com> - 1.21.2-4
-- Skip tests in %check due to incompatible Go version in buildroot (temporary).
-- Resolves: RHEL-59518
+* Fri Aug 16 2024 Alejandro Sáez <asm@redhat.com> - 1.22.1-1
+- Rebase to 1.22.1
+- Resolves: RHEL-54307
 
 * Wed Jan 31 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-3
 - Skip an additional test as it's breaking in the CI system.
