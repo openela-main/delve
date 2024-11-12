@@ -3,8 +3,8 @@
 %endif
 
 Name:                   delve
-Version:                1.21.2
-Release:                2%{?dist}
+Version:                1.22.1
+Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
@@ -71,6 +71,10 @@ done
 
 
 %changelog
+* Fri Aug 16 2024 Alejandro Sáez <asm@redhat.com> - 1.22.1-1
+- Rebase to Delve 1.22.1
+- Resolves: RHEL-50840
+
 * Thu Jan 25 2024 Alejandro Sáez <asm@redhat.com> - 1.21.2-2
 - Modify ports: Some CI systems complain about the usage of the 8888 port.
 - Improve the way PPC64LE support is enabled.
