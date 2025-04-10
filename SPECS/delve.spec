@@ -3,7 +3,7 @@
 %endif
 
 Name:                   delve
-Version:                1.22.1
+Version:                1.24.1
 Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
@@ -18,8 +18,8 @@ BuildRequires:          git
 BuildRequires:          lsof
 
 Provides:               dlv = %{version}
-
-Patch0001:		modify-tests.patch
+Patch1:			skip-coredump-test.patch
+Patch2:			skip-substitute-path-test.patch
 
 
 %description
@@ -71,6 +71,11 @@ done
 
 
 %changelog
+* Fri Mar 14 2025 David Benoit <dbenoit@redhat.com> - 1.24.1-1
+- Rebase to 1.24.1
+- Skip unsupported tests
+- Resolves: RHEL-83451
+
 * Fri Aug 16 2024 Alejandro Sáez <asm@redhat.com> - 1.22.1-1
 - Rebase to 1.22.1
 - Resolves: RHEL-54307
