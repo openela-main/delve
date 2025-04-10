@@ -1,0 +1,30 @@
+diff --git a/pkg/proc/test/support.go b/pkg/proc/test/support.go
+index d1f25bd49..c8efea360 100644
+--- a/pkg/proc/test/support.go
++++ b/pkg/proc/test/support.go
+@@ -392,6 +392,12 @@ func MustHaveCgo(t *testing.T) {
+ 	}
+ }
+ 
++func MustHaveModules(t *testing.T) {
++	if os.Getenv("GO111MODULE") == "off" {
++		t.Skip("skipping test which requires go modules")
++	}
++}
++
+ func RegabiSupported() bool {
+ 	// Tracks regabiSupported variable in ParseGOEXPERIMENT internal/buildcfg/exp.go
+ 	switch {
+diff --git a/service/test/integration2_test.go b/service/test/integration2_test.go
+index 9ef131a3e..2e3928fb8 100644
+--- a/service/test/integration2_test.go
++++ b/service/test/integration2_test.go
+@@ -3157,6 +3157,8 @@ func TestBreakpointVariablesWithoutG(t *testing.T) {
+ }
+ 
+ func TestGuessSubstitutePath(t *testing.T) {
++	protest.MustHaveModules(t)
++
+ 	t.Setenv("NOCERT", "1")
+ 	ver, _ := goversion.Parse(runtime.Version())
+ 	if ver.IsDevelBuild() && os.Getenv("CI") != "" && runtime.GOOS == "linux" {
