@@ -4,7 +4,7 @@
 
 Name:                   delve
 Version:                1.24.1
-Release:                2%{?dist}
+Release:                3%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
