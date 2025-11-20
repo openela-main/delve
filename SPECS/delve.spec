@@ -3,8 +3,8 @@
 %endif
 
 Name:                   delve
-Version:                1.24.1
-Release:                3%{?dist}
+Version:                1.25.2
+Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
@@ -21,16 +21,11 @@ Provides:               dlv = %{version}
 
 Patch0001:		modify-ports.patch
 
-# TODO: remove these once version 1.24.2 is released.
-Patch0002:		fix-rhel-83939.patch
-Patch0003:		fix-rhel-83958.patch
-
-
 %description
-Delve is a debugger for the Go programming language. The goal of the project 
-is to provide a simple, full featured debugging tool for Go. Delve should be 
-easy to invoke and easy to use. Chances are if you're using a debugger, things 
-aren't going your way. With that in mind, Delve should stay out of your way as 
+Delve is a debugger for the Go programming language. The goal of the project
+is to provide a simple, full featured debugging tool for Go. Delve should be
+easy to invoke and easy to use. Chances are if you're using a debugger, things
+aren't going your way. With that in mind, Delve should stay out of your way as
 much as possible.
 
 
@@ -62,8 +57,8 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
-for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
-    go test %{?exp} ${d} -skip 'TestGuessSubstitutePath'
+for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts | grep -v service/dap); do
+    go test %{?exp} ${d} -skip TestGuessSubstitutePath
 done
 
 
@@ -75,6 +70,10 @@ done
 
 
 %changelog
+* Thu Aug 28 2025 Alejandro Sáez <asm@redhat.com> - 1.25.2-1
+- Update to Delve 1.25.2
+- Resolves: RHEL-111801
+
 * Thu Mar 20 2025 Derek Parker <deparker@redhat.com> - 1.24.1-2
 - Fix 3 test failures
 - Resolves: RHEL-83939
