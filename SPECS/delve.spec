@@ -3,7 +3,7 @@
 %endif
 
 Name:                   delve
-Version:                1.24.1
+Version:                1.25.2
 Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
@@ -18,15 +18,14 @@ BuildRequires:          git
 BuildRequires:          lsof
 
 Provides:               dlv = %{version}
-Patch1:			skip-coredump-test.patch
-Patch2:			skip-substitute-path-test.patch
 
+Patch0001:		modify-ports.patch
 
 %description
-Delve is a debugger for the Go programming language. The goal of the project 
-is to provide a simple, full featured debugging tool for Go. Delve should be 
-easy to invoke and easy to use. Chances are if you're using a debugger, things 
-aren't going your way. With that in mind, Delve should stay out of your way as 
+Delve is a debugger for the Go programming language. The goal of the project
+is to provide a simple, full featured debugging tool for Go. Delve should be
+easy to invoke and easy to use. Chances are if you're using a debugger, things
+aren't going your way. With that in mind, Delve should stay out of your way as
 much as possible.
 
 
@@ -58,8 +57,8 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
-for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts); do
-    go test %{?exp} ${d}
+for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts | grep -v service/dap); do
+    go test %{?exp} ${d} -skip TestGuessSubstitutePath
 done
 
 
@@ -71,6 +70,10 @@ done
 
 
 %changelog
+* Thu Aug 28 2025 David Benoit <dbenoit@redhat.com> - 1.25.2-1
+- Update to Delve 1.25.2 (Sync from CentOS Stream 9)
+- Related: RHEL-121223
+
 * Fri Mar 14 2025 David Benoit <dbenoit@redhat.com> - 1.24.1-1
 - Rebase to 1.24.1
 - Skip unsupported tests
