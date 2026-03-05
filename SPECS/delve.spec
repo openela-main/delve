@@ -4,7 +4,7 @@
 
 Name:                   delve
 Version:                1.25.2
-Release:                1%{?dist}
+Release:                2%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
@@ -70,9 +70,12 @@ done
 
 
 %changelog
+* Wed Mar 04 2026 dbenoit <dbenoit@redhat.com> - 1.25.2-2
+- Rebuild without changes.
+- Resolves: RHEL-153104
+
 * Thu Aug 28 2025 Alejandro Sáez <asm@redhat.com> - 1.25.2-1
 - Update to Delve 1.25.2
-- Resolves: RHEL-111801
 
 * Thu Mar 20 2025 Derek Parker <deparker@redhat.com> - 1.24.1-2
 - Fix 3 test failures
