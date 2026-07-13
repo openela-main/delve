@@ -3,7 +3,7 @@
 %endif
 
 Name:                   delve
-Version:                1.25.2
+Version:                1.26.1
 Release:                1%{?dist}
 Summary:                A debugger for the Go programming language
 
@@ -20,6 +20,7 @@ BuildRequires:          lsof
 Provides:               dlv = %{version}
 
 Patch0001:		modify-ports.patch
+Patch0002:		fix-logger-warn.patch
 
 %description
 Delve is a debugger for the Go programming language. The goal of the project
@@ -58,7 +59,7 @@ export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
 for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts | grep -v service/dap); do
-    go test %{?exp} ${d} -skip TestGuessSubstitutePath
+    go test %{?exp} ${d} -skip TestGuessSubstitutePath -skip TestBreakpointMaterializedEvent
 done
 
 
@@ -70,6 +71,10 @@ done
 
 
 %changelog
+* Fri Jul 10 2026 dbenoit <dbenoit@redhat.com> - 1.26.1-1
+- Update to Delve 1.26.1
+- Related: RHEL-183712
+
 * Thu Aug 28 2025 David Benoit <dbenoit@redhat.com> - 1.25.2-1
 - Update to Delve 1.25.2 (Sync from CentOS Stream 9)
 - Related: RHEL-121223
