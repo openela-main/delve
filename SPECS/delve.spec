@@ -4,7 +4,7 @@
 
 Name:                   delve
 Version:                1.26.1
-Release:                1%{?dist}
+Release:                2%{?dist}
 Summary:                A debugger for the Go programming language
 
 License:                MIT
@@ -19,8 +19,8 @@ BuildRequires:          lsof
 
 Provides:               dlv = %{version}
 
-Patch0001:		modify-ports.patch
-Patch0002:		fix-logger-warn.patch
+Patch0001:              modify-ports.patch
+Patch0002:              fix-logger-warn.patch
 
 %description
 Delve is a debugger for the Go programming language. The goal of the project
@@ -55,6 +55,7 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %check
+export GOMODCACHE="%{gobuilddir}/pkg/mod"
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
@@ -71,6 +72,10 @@ done
 
 
 %changelog
+* Wed Nov 04 2026 Alejandro Sáez <asm@redhat.com> - 1.26.1-2
+- Add GOMODCACHE in %check
+- Resolves: RHEL-289505
+
 * Fri Jul 10 2026 dbenoit <dbenoit@redhat.com> - 1.26.1-1
 - Update to Delve 1.26.1
 - Related: RHEL-183712
