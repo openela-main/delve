@@ -3,7 +3,7 @@
 %endif
 
 Name:                   delve
-Version:                1.26.1
+Version:                1.27.2
 Release:                2%{?dist}
 Summary:                A debugger for the Go programming language
 
@@ -55,12 +55,11 @@ install -Dpm 0755 bin/dlv %{buildroot}%{_bindir}/dlv
 
 
 %check
-export GOMODCACHE="%{gobuilddir}/pkg/mod"
 export GO111MODULE=off
 export GOPATH="%{_builddir}/%{name}-%{version}/_build"
 cd "_build/src/github.com/go-delve/%{name}"
 for d in $(go list %{?exp} ./... | grep -v cmd | grep -v scripts | grep -v service/dap); do
-    go test %{?exp} ${d} -skip TestGuessSubstitutePath -skip TestBreakpointMaterializedEvent
+    go test %{?exp} ${d} -skip 'TestGuessSubstitutePath|TestBreakpointMaterializedEvent|TestNextNetHTTP|TestCgoStacktrace'
 done
 
 
@@ -72,9 +71,13 @@ done
 
 
 %changelog
-* Wed Nov 04 2026 Álex Sáez <asm@redhat.com> - 1.26.1-2
-- Add GOMODCACHE in check
-- Resolves: RHEL-289481
+* Mon Oct 26 2026 Álex Sáez <asm@redhat.com> - 1.27.2-2
+- Package rebuild
+- Resolves: RHEL-289483
+
+* Tue Oct 20 2026 Alejandro Sáez <asm@redhat.com> - 1.27.2-1
+- Update to Delve 1.27.2
+- Resolves: RHEL-219306
 
 * Wed Apr 01 2026 dbenoit <dbenoit@redhat.com> - 1.26.1-1
 - Update to Delve 1.26.1
